@@ -2,9 +2,19 @@
 	/* text-align: center; */
 }
 
-h1{
-	text-align: center;
+.header{
+	h1{
+		margin: 10px;
+		text-align: center;
+	}
+	p{
+		color: red;
+		font-weight: bold;
+		margin: 0 0 16px;
+		text-align: center;
+	}
 }
+
 h2.loading{
 	text-align: center;
 }

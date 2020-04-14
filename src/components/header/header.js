@@ -5,6 +5,7 @@ const header = (props) =>{
 	return(
 		<div className="header">
 			<h1>Film listing</h1>
+			<p>Work in progress</p>
 		</div>
 	)
 
