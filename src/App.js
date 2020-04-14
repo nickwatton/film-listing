@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import Header from './components/header/header';
 import FilmListing from './components/filmListing/filmListing';
 import FilterList from './components/filterList/filterList';
+import Pagination from './components/pagination/pagination';
+import Footer from './components/footer/footer';
 import './App.scss';
 
 class App extends Component {
 	state = {
+		year: 2020,
+		pageSize: 20,
+		pageId: 0,
 		films:[],
 		filters:[],
 		loaded:false
@@ -29,6 +34,7 @@ class App extends Component {
 
 		this.processFilms(mutable, data.ratingMap);
 
+		mutable.year = data.copyright;
 		mutable.filters = [...this.state.filters, ...data.filters];
 		mutable.loaded = true;
 		this.setState(mutable);
@@ -111,17 +117,25 @@ class App extends Component {
 	}
 
 	render (){
+		let filmsToDisplay = this.state.films.slice(
+			this.state.pageSize * this.state.pageId, this.state.pageSize
+		)
+		let pageMax = Math.ceil( this.state.films.length / this.state.pageSize );
+
 		return (
 			<div className = "App">
 				<Header />
+				
 				{this.state.loaded ? 
 					<>
 						<FilterList click={this.handleFilterOptionClick} filters={this.state.filters} ageFilterValues={this.state.ageFilterValues} />
-						<FilmListing films={this.state.films} /> 
+						<FilmListing films={filmsToDisplay} /> 
 					</>
 					: 
 					<h2 className="loading">Loading data</h2>
 				}
+				<Pagination page={this.state.pageId + 1} pageMax={pageMax}/>
+				<Footer year={this.state.year}/>
 			</div>
 		)
 	}
