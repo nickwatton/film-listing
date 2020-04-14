@@ -1,0 +1,72 @@
+.App {
+	/* text-align: center; */
+}
+
+h1{
+	text-align: center;
+}
+h2.loading{
+	text-align: center;
+}
+
+.filterList{
+	padding-bottom: 15px;
+	text-align: center;
+	.filterOption{
+		border: 1px solid grey;
+		cursor: pointer;
+		display: inline-block;
+		margin-left: 5px;
+		padding: 0 10px 5px 10px;
+	}
+}
+
+.film{
+	padding-bottom: 10px;
+	summary{
+		cursor: pointer;
+		div{
+			display: inline-block;
+		}
+	}
+	.film-poster{
+		width: 120px;
+		img{
+			height: 100px;
+			margin: 0 10px 0 10px;
+			width: auto;
+		}
+	}
+	.film-details{
+		margin-left: 102px;
+		p{
+			margin: 0 5px 0 35px;
+		}
+	}
+}
+
+
+.star-rating{
+	&::after{
+		background: url('/images/star_on.png') repeat-x;
+		content: " ";
+		display: inline-block;
+		height: 15px;
+		margin-left: 7px;
+	}
+	&.stars_1::after{
+		width: 12px;
+	}
+	&.stars_2::after{
+		width: 24px;
+	}
+	&.stars_3::after{
+		width: 36px;
+	}
+	&.stars_4::after{
+		width: 48px;
+	}
+	&.stars_5::after{
+		width: 60px;
+	}
+}
