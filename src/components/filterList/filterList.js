@@ -7,7 +7,8 @@ const filterList = (props) => {
 	return (
 		<div className='filterList'>
 			{props.filters.map( (f, i) =>  <FilterOption key={`filter_${i}`} 
-																				click={props.click}
+																				filterClick={props.filterClick}
+																				activeFilter={props.activeFilter}
 																				label={f.label}
 																				type={f.type}
 																				searchField={f.searchField} />  )}

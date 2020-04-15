@@ -5,7 +5,7 @@ const footer = (props) =>{
 		<Fragment>
 			<div className='clearfix' />
 			<div className='footer'>
-				&copy; {props.year} Nick Watton All Rights Reserved
+				&copy; {props.year} Nick Watton
 			</div>
 		</Fragment>
 	)

@@ -1,9 +1,11 @@
 import React from 'react';
 
 const filterOption = (props) => {
-	// console.log(props)
 	return (
-		<div className='filterOption' onClick={() => props.click(props.type)}>{props.label}</div>
+		<div className={props.label === props.activeFilter ? 'filterOption active' : 'filterOption'}
+					onClick={() => props.filterClick(props.type, props.label)}>
+					{props.label}
+		</div>
 	)
 }
 

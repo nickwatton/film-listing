@@ -9,10 +9,11 @@ import './App.scss';
 class App extends Component {
 	state = {
 		year: 2020,
-		pageSize: 20,
+		pageSize: 3,
 		pageId: 0,
 		films:[],
 		filters:[],
+		activeFilter:null,
 		loaded:false
 	}
 
@@ -112,8 +113,11 @@ class App extends Component {
 		return Object.keys(obj).map( key => obj[key] );
 	}
 
-	handleFilterOptionClick(evt){
-		console.log('handle filter option click', evt)
+	// Set / toggle off current filter
+	filterHandler = (filterType, filterID) => {
+		const mutable = {...this.state};
+		mutable.activeFilter = filterID === mutable.activeFilter ? null : filterID;
+		this.setState(mutable);
 	}
 
 	render (){
@@ -122,18 +126,22 @@ class App extends Component {
 		)
 		let pageMax = Math.ceil( this.state.films.length / this.state.pageSize );
 
+		const bodyContent = this.state.loaded ?
+						<div>
+						<FilterList filterClick={ this.filterHandler } 
+												filters={this.state.filters} 
+												ageFilterValues={this.state.ageFilterValues} 
+												activeFilter={this.state.activeFilter} />
+						<FilmListing films={filmsToDisplay} /> 
+					</div> : 
+					<h2 className="loading">Loading data</h2>
+
 		return (
 			<div className = "App">
 				<Header />
+
+				{ bodyContent }
 				
-				{this.state.loaded ? 
-					<>
-						<FilterList click={this.handleFilterOptionClick} filters={this.state.filters} ageFilterValues={this.state.ageFilterValues} />
-						<FilmListing films={filmsToDisplay} /> 
-					</>
-					: 
-					<h2 className="loading">Loading data</h2>
-				}
 				<Pagination page={this.state.pageId + 1} pageMax={pageMax}/>
 				<Footer year={this.state.year}/>
 			</div>
