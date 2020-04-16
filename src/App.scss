@@ -37,6 +37,17 @@ h2.loading{
 	}
 }
 
+.filterUI{
+	border: 1px dashed red;
+	.inputElement{
+		display: inline-block;
+		width: 160px;
+		&:first-of-type{
+			margin-right: 30px;
+		}
+	}
+}
+
 .film{
 	padding-bottom: 10px;
 	summary{

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Header from './components/header/header';
 import FilmListing from './components/filmListing/filmListing';
 import FilterList from './components/filterList/filterList';
+import MinMax from './components/filterList/filterUI/minMax';
 import Pagination from './components/pagination/pagination';
 import Footer from './components/footer/footer';
 import './App.scss';
@@ -13,7 +14,7 @@ class App extends Component {
 		pageId: 0,
 		films:[],
 		filters:[],
-		activeFilter:null,
+		activeFilter:'Duration',
 		loaded:false
 	}
 
@@ -92,8 +93,7 @@ class App extends Component {
 		mutable.ageFilterValues = ageRatings;
 		mutable.minYear = minYear;
 		mutable.maxYear = maxYear;
-		mutable.minLength = minLength;
-		mutable.maxLength = maxLength;
+		mutable.minMaxDuration = {'min':minLength, 'currMin':minLength, 'max':maxLength, 'currMax':maxLength, error:'' }
 
 		// console.log(minLength, maxLength)
 		// console.log('Genres:', mutable.genreDataListValues)
@@ -120,21 +120,48 @@ class App extends Component {
 		this.setState(mutable);
 	}
 
+	handleMinLengthChange = (evt) => {
+		const val = Number(evt.target.value);
+		const mutable = {...this.state};
+		mutable.minMaxDuration.currMin = val;
+		if(mutable.minMaxDuration.currMax < val){
+			mutable.minMaxDuration.currMax = val;
+		}
+		this.setState(mutable);
+	}
+	handleMaxLengthChange = (evt) => {
+		const val = Number(evt.target.value);
+		const mutable = {...this.state};
+		mutable.minMaxDuration.currMax = val;
+		if(mutable.minMaxDuration.currMin > val){
+			mutable.minMaxDuration.currMin = val;
+		}
+		this.setState(mutable);
+	}
+
 	render (){
 		let filmsToDisplay = this.state.films.slice(
 			this.state.pageSize * this.state.pageId, this.state.pageSize
 		)
 		let pageMax = Math.ceil( this.state.films.length / this.state.pageSize );
 
+		let filterUI = null;
+		if(this.state.activeFilter){
+			filterUI = <MinMax minMax = {this.state.minMaxDuration}
+												changeMin = { this.handleMinLengthChange }
+												changeMax = { this.handleMaxLengthChange }/>
+		}
+
 		const bodyContent = this.state.loaded ?
-						<div>
-						<FilterList filterClick={ this.filterHandler } 
-												filters={this.state.filters} 
-												ageFilterValues={this.state.ageFilterValues} 
-												activeFilter={this.state.activeFilter} />
-						<FilmListing films={filmsToDisplay} /> 
+					<div>
+						<FilterList filterClick = { this.filterHandler } 
+												filters = {this.state.filters} 
+												ageFilterValues = {this.state.ageFilterValues} 
+												activeFilter = {this.state.activeFilter} />
+						{ filterUI }
+						<FilmListing films = {filmsToDisplay} /> 
 					</div> : 
-					<h2 className="loading">Loading data</h2>
+					<h2 className = "loading">Loading data</h2>
 
 		return (
 			<div className = "App">
@@ -142,8 +169,8 @@ class App extends Component {
 
 				{ bodyContent }
 				
-				<Pagination page={this.state.pageId + 1} pageMax={pageMax}/>
-				<Footer year={this.state.year}/>
+				<Pagination page = {this.state.pageId + 1} pageMax = {pageMax}/>
+				<Footer year = {this.state.year}/>
 			</div>
 		)
 	}
