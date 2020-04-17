@@ -14,7 +14,7 @@ class App extends Component {
 		pageId: 0,
 		films:[],
 		filters:[],
-		activeFilter:'Duration',
+		activeFilter:'Year',
 		loaded:false
 	}
 
@@ -122,7 +122,6 @@ class App extends Component {
 		const val = Number(evt.target.value);
 		const mutable = {...this.state};
 		const stateObject = mutable[stateObj];
-
 		if(evt.target.id === 'rangeMin'){
 			stateObject.currMin = val;
 			if(stateObject.currMax < val){
@@ -142,7 +141,10 @@ class App extends Component {
 		let filteredFilms = [...this.state.films];
 		
 		// Filter duration
-		filteredFilms = filteredFilms.filter( film => film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin )
+		filteredFilms = filteredFilms.filter( film => film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin );
+
+		// Filter year
+		filteredFilms = filteredFilms.filter( film => film.year <= this.state.minMaxYear.currMax && film.year >= this.state.minMaxYear.currMin );
 
 		let filmsToDisplay = [...filteredFilms].slice(
 			this.state.pageSize * this.state.pageId, this.state.pageSize
