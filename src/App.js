@@ -40,6 +40,8 @@ class App extends Component {
 		mutable.filters = [...this.state.filters, ...data.filters];
 		mutable.loaded = true;
 		this.setState(mutable);
+
+
 	}
 	
 	/* Creates lists of unique data from all films, for search filters.
@@ -50,11 +52,10 @@ class App extends Component {
 		let directors = {};
 		let genres = {};
 		let films = mutable.films;
-
 		let minYear = 9999999, maxYear = 0;
 		let minLength = 9999999, maxLength = 0;
 		
-		console.log(films[0])
+		// console.log(films[0])
 
 		for(let i = 0; i<films.length; i++){
 			let film = films[i];
@@ -91,14 +92,11 @@ class App extends Component {
 		mutable.genreDataListValues = this.convertObjectToArray(genres);
 
 		mutable.ageFilterValues = ageRatings;
-		mutable.minYear = minYear;
-		mutable.maxYear = maxYear;
+		mutable.minMaxYear = {'min':minYear, 'currMin':minYear, 'max':maxYear, 'currMax':maxYear, error:'' }
 		mutable.minMaxDuration = {'min':minLength, 'currMin':minLength, 'max':maxLength, 'currMax':maxLength, error:'' }
 
-		// console.log(minLength, maxLength)
 		// console.log('Genres:', mutable.genreDataListValues)
 		// console.log(genres)
-
 	}
 
 	sortObject(unsorted){
@@ -120,36 +118,44 @@ class App extends Component {
 		this.setState(mutable);
 	}
 
-	handleMinLengthChange = (evt) => {
+	handleMinMaxDurationChange = (evt) => {
 		const val = Number(evt.target.value);
 		const mutable = {...this.state};
-		mutable.minMaxDuration.currMin = val;
-		if(mutable.minMaxDuration.currMax < val){
-			mutable.minMaxDuration.currMax = val;
-		}
-		this.setState(mutable);
-	}
-	handleMaxLengthChange = (evt) => {
-		const val = Number(evt.target.value);
-		const mutable = {...this.state};
-		mutable.minMaxDuration.currMax = val;
-		if(mutable.minMaxDuration.currMin > val){
+		if(evt.target.id === 'rangeMin'){
 			mutable.minMaxDuration.currMin = val;
+			if(mutable.minMaxDuration.currMax < val){
+				mutable.minMaxDuration.currMax = val;
+			}
+		}
+		else if(evt.target.id === 'rangeMax'){
+			mutable.minMaxDuration.currMax = val;
+			if(mutable.minMaxDuration.currMin > val){
+				mutable.minMaxDuration.currMin = val;
+			}
 		}
 		this.setState(mutable);
 	}
 
-	render (){
-		let filmsToDisplay = this.state.films.slice(
+	render(){
+		let allFilms = [...this.state.films];
+		let filteredFilms = [];
+
+		for(let loop = allFilms.length, i=0; i < loop; i++){
+			let film = allFilms[i];
+			if(film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin){
+				filteredFilms.push(film);
+			}
+		}
+
+		let filmsToDisplay = [...filteredFilms].slice(
 			this.state.pageSize * this.state.pageId, this.state.pageSize
 		)
-		let pageMax = Math.ceil( this.state.films.length / this.state.pageSize );
+		let pageMax = Math.ceil( filteredFilms.length / this.state.pageSize );
 
 		let filterUI = null;
 		if(this.state.activeFilter){
 			filterUI = <MinMax minMax = {this.state.minMaxDuration}
-												changeMin = { this.handleMinLengthChange }
-												changeMax = { this.handleMaxLengthChange }/>
+												change = { this.handleMinMaxDurationChange }/>
 		}
 
 		const bodyContent = this.state.loaded ?
@@ -169,7 +175,7 @@ class App extends Component {
 
 				{ bodyContent }
 				
-				<Pagination page = {this.state.pageId + 1} pageMax = {pageMax}/>
+				<Pagination page = {this.state.pageId + 1} pageMax = {pageMax} numFilms = {filteredFilms.length}/>
 				<Footer year = {this.state.year}/>
 			</div>
 		)

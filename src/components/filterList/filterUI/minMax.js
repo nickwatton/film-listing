@@ -5,8 +5,9 @@ const minMax = (props) => {
 		<div className='filterUI'>
 
 			<div className='inputElement'>
+				<label htmlFor = "rangeMin">Minimum:</label>
 				<input id='rangeMin' type='range' 
-								onChange = { props.changeMin }
+								onChange = { props.change }
 								min = {props.minMax.min} 
 								max = {props.minMax.max}
 								value = {props.minMax.currMin}/>
@@ -14,8 +15,9 @@ const minMax = (props) => {
 			</div>
 
 			<div className='inputElement'>
+				<label htmlFor = "rangeMax">Maximum:</label>
 				<input id='rangeMax' type='range' 
-								onChange = { props.changeMax }
+								onChange = { props.change }
 								min = {props.minMax.min} 
 								max = {props.minMax.max}
 								value = {props.minMax.currMax}/>
