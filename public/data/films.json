@@ -33,7 +33,7 @@
 		},
 		{
 			"type": "dataList",
-			"label": "Tile",
+			"label": "Title",
 			"searchField": "title"
 		}
 	],

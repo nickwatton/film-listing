@@ -12,9 +12,12 @@ class App extends Component {
 		year: 2020,
 		pageSize: 3,
 		pageId: 0,
-		films:[],
-		filters:[],
-		activeFilter:'Year',
+		films: [],
+		filters: [],
+		activeFilter: 'Year',
+		minMaxDuration: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:false },
+		minMaxYear: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:false },
+		minMaxStars: {'min':0, 'currMin':0, 'max':5, 'currMax':5, active:true },
 		loaded:false
 	}
 
@@ -92,8 +95,8 @@ class App extends Component {
 		mutable.genreDataListValues = this.convertObjectToArray(genres);
 
 		mutable.ageFilterValues = ageRatings;
-		mutable.minMaxYear = {'min':minYear, 'currMin':minYear, 'max':maxYear, 'currMax':maxYear, error:'' }
-		mutable.minMaxDuration = {'min':minLength, 'currMin':minLength, 'max':maxLength, 'currMax':maxLength, error:'' }
+		mutable.minMaxYear = {'min':minYear, 'currMin':minYear, 'max':maxYear, 'currMax':maxYear, active:false }
+		mutable.minMaxDuration = {'min':minLength, 'currMin':minLength, 'max':maxLength, 'currMax':maxLength, active:false }
 
 		// console.log('Genres:', mutable.genreDataListValues)
 		// console.log(genres)
@@ -119,8 +122,8 @@ class App extends Component {
 	}
 
 	handleMinMaxChange = (evt, stateObj) => {
-		const val = Number(evt.target.value);
 		const mutable = {...this.state};
+		const val = Number(evt.target.value);
 		const stateObject = mutable[stateObj];
 		if(evt.target.id === 'rangeMin'){
 			stateObject.currMin = val;
@@ -136,15 +139,25 @@ class App extends Component {
 		}
 		this.setState(mutable);
 	}
+	handleMinMaxToggle = (evt, stateObj) => {
+		const mutable = {...this.state};
+		const stateObject = mutable[stateObj];
+		stateObject.active = evt.target.checked;
+		this.setState(mutable);
+	}
 
 	render(){
 		let filteredFilms = [...this.state.films];
 		
-		// Filter duration
-		filteredFilms = filteredFilms.filter( film => film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin );
-
-		// Filter year
-		filteredFilms = filteredFilms.filter( film => film.year <= this.state.minMaxYear.currMax && film.year >= this.state.minMaxYear.currMin );
+		if(this.state.loaded){
+			// MinMax filters (duration, years, stars)
+			if(this.state.minMaxDuration.active)
+				filteredFilms = filteredFilms.filter( film => film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin );
+			if(this.state.minMaxYear.active)
+				filteredFilms = filteredFilms.filter( film => film.year <= this.state.minMaxYear.currMax && film.year >= this.state.minMaxYear.currMin );
+			if(this.state.minMaxStars.active)
+				filteredFilms = filteredFilms.filter( film => film.stars <= this.state.minMaxStars.currMax && film.stars >= this.state.minMaxStars.currMin );
+		}
 
 		let filmsToDisplay = [...filteredFilms].slice(
 			this.state.pageSize * this.state.pageId, this.state.pageSize
@@ -155,11 +168,22 @@ class App extends Component {
 		if(this.state.activeFilter && this.state.activeFilter === 'Duration'){
 			filterUI = <MinMax minMax = {this.state.minMaxDuration}
 												minMaxStateObject = {'minMaxDuration'}
+												isActive = {this.state.minMaxDuration.active}
+												toggle = { this.handleMinMaxToggle }
 												change = { this.handleMinMaxChange }/>
 		}
 		else if(this.state.activeFilter && this.state.activeFilter === 'Year'){
 			filterUI = <MinMax minMax = {this.state.minMaxYear}
 												minMaxStateObject = {'minMaxYear'}
+												isActive = {this.state.minMaxYear.active}
+												toggle = { this.handleMinMaxToggle }
+												change = { this.handleMinMaxChange }/>
+		}
+		else if(this.state.activeFilter && this.state.activeFilter === 'Star Rating'){
+			filterUI = <MinMax minMax = {this.state.minMaxStars}
+												minMaxStateObject = {'minMaxStars'}
+												isActive = {this.state.minMaxStars.active}
+												toggle = { this.handleMinMaxToggle }
 												change = { this.handleMinMaxChange }/>
 		}
 

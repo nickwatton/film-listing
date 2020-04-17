@@ -39,11 +39,15 @@ h2.loading{
 
 .filterUI{
 	// border: 1px dashed red;
+	text-align: center;
 	.inputElement{
 		display: inline-block;
-		width: 160px;
-		&:first-of-type{
-			margin-right: 30px;
+		width: 170px;
+		margin-right: 10px;
+		&:last-of-type{
+			margin-right: 0;
+			// text-align: right;
+			width: 50px;
 		}
 	}
 }
