@@ -118,34 +118,31 @@ class App extends Component {
 		this.setState(mutable);
 	}
 
-	handleMinMaxDurationChange = (evt) => {
+	handleMinMaxChange = (evt, stateObj) => {
 		const val = Number(evt.target.value);
 		const mutable = {...this.state};
+		const stateObject = mutable[stateObj];
+
 		if(evt.target.id === 'rangeMin'){
-			mutable.minMaxDuration.currMin = val;
-			if(mutable.minMaxDuration.currMax < val){
-				mutable.minMaxDuration.currMax = val;
+			stateObject.currMin = val;
+			if(stateObject.currMax < val){
+				stateObject.currMax = val;
 			}
 		}
 		else if(evt.target.id === 'rangeMax'){
-			mutable.minMaxDuration.currMax = val;
-			if(mutable.minMaxDuration.currMin > val){
-				mutable.minMaxDuration.currMin = val;
+			stateObject.currMax = val;
+			if(stateObject.currMin > val){
+				stateObject.currMin = val;
 			}
 		}
 		this.setState(mutable);
 	}
 
 	render(){
-		let allFilms = [...this.state.films];
-		let filteredFilms = [];
-
-		for(let loop = allFilms.length, i=0; i < loop; i++){
-			let film = allFilms[i];
-			if(film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin){
-				filteredFilms.push(film);
-			}
-		}
+		let filteredFilms = [...this.state.films];
+		
+		// Filter duration
+		filteredFilms = filteredFilms.filter( film => film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin )
 
 		let filmsToDisplay = [...filteredFilms].slice(
 			this.state.pageSize * this.state.pageId, this.state.pageSize
@@ -153,9 +150,15 @@ class App extends Component {
 		let pageMax = Math.ceil( filteredFilms.length / this.state.pageSize );
 
 		let filterUI = null;
-		if(this.state.activeFilter){
+		if(this.state.activeFilter && this.state.activeFilter === 'Duration'){
 			filterUI = <MinMax minMax = {this.state.minMaxDuration}
-												change = { this.handleMinMaxDurationChange }/>
+												minMaxStateObject = {'minMaxDuration'}
+												change = { this.handleMinMaxChange }/>
+		}
+		else if(this.state.activeFilter && this.state.activeFilter === 'Year'){
+			filterUI = <MinMax minMax = {this.state.minMaxYear}
+												minMaxStateObject = {'minMaxYear'}
+												change = { this.handleMinMaxChange }/>
 		}
 
 		const bodyContent = this.state.loaded ?
