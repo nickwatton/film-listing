@@ -11,7 +11,7 @@ class App extends Component {
 	state = {
 		year: 2020,
 		pageSize: 3,
-		pageId: 0,
+		currentPage: 0,
 		films: [],
 		filters: [],
 		activeFilter: 'Year',
@@ -43,8 +43,6 @@ class App extends Component {
 		mutable.filters = [...this.state.filters, ...data.filters];
 		mutable.loaded = true;
 		this.setState(mutable);
-
-
 	}
 	
 	/* Creates lists of unique data from all films, for search filters.
@@ -95,8 +93,9 @@ class App extends Component {
 		mutable.genreDataListValues = this.convertObjectToArray(genres);
 
 		mutable.ageFilterValues = ageRatings;
-		mutable.minMaxYear = {'min':minYear, 'currMin':minYear, 'max':maxYear, 'currMax':maxYear, active:false }
-		mutable.minMaxDuration = {'min':minLength, 'currMin':minLength, 'max':maxLength, 'currMax':maxLength, active:false }
+
+		mutable.minMaxYear = {'min':minYear, 'currMin':minYear, 'max':maxYear, 'currMax':maxYear, active:true }
+		mutable.minMaxDuration = {'min':minLength, 'currMin':minLength, 'max':maxLength, 'currMax':maxLength, active:true }
 
 		// console.log('Genres:', mutable.genreDataListValues)
 		// console.log(genres)
@@ -121,6 +120,7 @@ class App extends Component {
 		this.setState(mutable);
 	}
 
+	// Handle min/max slider
 	handleMinMaxChange = (evt, stateObj) => {
 		const mutable = {...this.state};
 		const val = Number(evt.target.value);
@@ -139,10 +139,20 @@ class App extends Component {
 		}
 		this.setState(mutable);
 	}
+	// Toggle a filter being active
 	handleMinMaxToggle = (evt, stateObj) => {
 		const mutable = {...this.state};
 		const stateObject = mutable[stateObj];
 		stateObject.active = evt.target.checked;
+		this.setState(mutable);
+	}
+
+	handlePagination = (val) => {
+		const mutable = {...this.state};
+		mutable.currentPage += val;
+
+		// if current greater than max ... current === max
+
 		this.setState(mutable);
 	}
 
@@ -158,9 +168,10 @@ class App extends Component {
 			if(this.state.minMaxStars.active)
 				filteredFilms = filteredFilms.filter( film => film.stars <= this.state.minMaxStars.currMax && film.stars >= this.state.minMaxStars.currMin );
 		}
-
+		
+		let startFilm = this.state.pageSize * this.state.currentPage;
 		let filmsToDisplay = [...filteredFilms].slice(
-			this.state.pageSize * this.state.pageId, this.state.pageSize
+			startFilm, startFilm + this.state.pageSize
 		)
 		let pageMax = Math.ceil( filteredFilms.length / this.state.pageSize );
 
@@ -204,8 +215,11 @@ class App extends Component {
 
 				{ bodyContent }
 				
-				<Pagination page = {this.state.pageId + 1} pageMax = {pageMax} numFilms = {filteredFilms.length}/>
-				<Footer year = {this.state.year}/>
+				<Pagination page = {this.state.currentPage} 
+										pageMax = {pageMax} 
+										numFilms = {filteredFilms.length}
+										click = { this.handlePagination } />
+				<Footer year = {this.state.year} />
 			</div>
 		)
 	}

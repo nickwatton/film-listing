@@ -24,13 +24,13 @@ const minMax = (props) => {
 				<span id = 'minValue'>{props.minMax.currMax}</span>
 			</div>
 
-			<div className='inputElement'>
+			{/* <div className='inputElement'>
 				<label htmlFor = 'filterActive'>Active</label>
 				<input id = 'isActive' type = 'checkbox'
 								defaultChecked = { props.isActive }
 								onClick = { (evt) => props.toggle(evt, props.minMaxStateObject) }></input>
 			</div>
-			<p className='error'>{props.minMax.error}</p>
+			<p className='error'>{props.minMax.error}</p> */}
 
 		</div>
 	)
