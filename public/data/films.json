@@ -3,38 +3,45 @@
 	"filters":[
 		{
 			"type": "list",
-			"label": "Age rating",
-			"searchField": "BBFC"
+			"label": "Age Rating",
+			"searchField": "BBFC",
+			"active": true
 		},
 		{
 			"type": "list",
 			"label": "Genre",
-			"searchField": "category"
+			"searchField": "category",
+			"active": false
 		},
 		{
 			"type": "range",
 			"label": "Duration",
-			"searchField": "duration"
+			"searchField": "duration",
+			"active": true
 		},
 		{
 			"type": "range",
 			"label": "Year",
-			"searchField": "year"
+			"searchField": "year",
+			"active": true
 		},
 		{
-			"type": "numeric",
+			"type": "range",
 			"label": "Star Rating",
-			"searchField": "stars"
+			"searchField": "stars",
+			"active": true
 		},
 		{
 			"type": "dataList",
 			"label": "Director",
-			"searchField": "director"
+			"searchField": "director",
+			"active": false
 		},
 		{
 			"type": "dataList",
 			"label": "Title",
-			"searchField": "title"
+			"searchField": "title",
+			"active": false
 		}
 	],
 	"ratingMap":{

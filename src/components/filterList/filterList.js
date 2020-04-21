@@ -6,12 +6,11 @@ const filterList = (props) => {
 
 	return (
 		<div className='filterList'>
-			{props.filters.map( (f, i) =>  <FilterOption key={`filter_${i}`} 
+			{props.filters.map( (f, i) => (f.active) ? <FilterOption key={`filter_${i}`} 
 																				filterClick={props.filterClick}
 																				activeFilter={props.activeFilter}
 																				label={f.label}
-																				type={f.type}
-																				searchField={f.searchField} />  )}
+																				type={f.type} /> : '' )}
 		</div>
 	)
 }

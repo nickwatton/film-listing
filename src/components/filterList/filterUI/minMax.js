@@ -7,7 +7,7 @@ const minMax = (props) => {
 			<div className='inputElement'>
 				<label htmlFor = 'rangeMin'>Minimum:</label>
 				<input id = 'rangeMin' type = 'range' 
-								onChange = { (evt) => props.change(evt, props.minMaxStateObject) }
+								onChange = { (evt) => props.change(evt, props.stateObject) }
 								min = {props.minMax.min} 
 								max = {props.minMax.max}
 								value = {props.minMax.currMin}/>
@@ -17,7 +17,7 @@ const minMax = (props) => {
 			<div className='inputElement'>
 				<label htmlFor = 'rangeMax'>Maximum:</label>
 				<input id = 'rangeMax' type = 'range' 
-								onChange = { (evt) => props.change(evt, props.minMaxStateObject) }
+								onChange = { (evt) => props.change(evt, props.stateObject) }
 								min = {props.minMax.min} 
 								max = {props.minMax.max}
 								value = {props.minMax.currMax}/>
@@ -28,7 +28,7 @@ const minMax = (props) => {
 				<label htmlFor = 'filterActive'>Active</label>
 				<input id = 'isActive' type = 'checkbox'
 								defaultChecked = { props.isActive }
-								onClick = { (evt) => props.toggle(evt, props.minMaxStateObject) }></input>
+								onClick = { (evt) => props.toggle(evt, props.stateObject) }></input>
 			</div>
 			<p className='error'>{props.minMax.error}</p> */}
 
