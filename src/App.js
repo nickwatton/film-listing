@@ -3,7 +3,7 @@ import Header from './components/header/header';
 import FilmListing from './components/filmListing/filmListing';
 import FilterList from './components/filterList/filterList';
 import MinMax from './components/filterList/filterUI/minMax';
-// import SelectList from './components/filterList/filterUI/selectList';
+import SelectList from './components/filterList/filterUI/selectList';
 import SelectListMax from './components/filterList/filterUI/selectListMax';
 import Pagination from './components/pagination/pagination';
 import Footer from './components/footer/footer';
@@ -21,7 +21,7 @@ class App extends Component {
 		minMaxYear: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxStars: {'min':0, 'currMin':0, 'max':5, 'currMax':5, active:true },
 		selectedAge: -1,
-		selectedGenre: null,
+		selectedGenre: 'none',
 		loaded:false
 	}
 
@@ -90,7 +90,7 @@ class App extends Component {
 				genres[genre[i]] = genre[i];
 			}
 		}
-		// console.log(typeof films[0].ageValue)
+		// console.log(typeof films[0].genres)
 
 		directors = this.sortObject(directors);
 		mutable.directorDataListValues = this.convertObjectToArray(directors);
@@ -102,7 +102,6 @@ class App extends Component {
 		ageRatingsArray.sort(function(a, b) {
 			return a.ageValue - b.ageValue;
 		});
-		// console.log( ageRatingsArray )
 		mutable.ageFilterValues = ageRatingsArray;
 
 		mutable.minMaxYear = {'min':minYear, 'currMin':minYear, 'max':maxYear, 'currMax':maxYear, active:true }
@@ -157,11 +156,18 @@ class App extends Component {
 		this.setState(mutable);
 	}
 
-	// Handle selectlist filter
+	// Handle selectlistMax filter
 	handleSelectMaxClick = (evt, stateObj) => {
 		const mutable = {...this.state};
 		mutable[stateObj] = Number(evt.target.value);
-		console.log(mutable[stateObj])
+		this.setState(mutable);
+	}	
+
+	// Handle selectlist filter
+	handleSelectClick = (evt, stateObj) => {
+		const mutable = {...this.state};
+		mutable[stateObj] = evt.target.value;
+		// console.log(mutable[stateObj])
 		this.setState(mutable);
 	} 
 
@@ -189,7 +195,9 @@ class App extends Component {
 			}
 			if(this.state.selectedAge !== -1){
 				filteredFilms = filteredFilms.filter( film => film.ageValue <= this.state.selectedAge );
-				// filteredFilms = filteredFilms.filter( film => film.BBFC === this.state.selectedAge );
+			}
+			if(this.state.selectedGenre !== 'none'){
+				filteredFilms = filteredFilms.filter( film => film.category.includes(this.state.selectedGenre) );
 			}
 		}
 		
@@ -224,8 +232,15 @@ class App extends Component {
 			}
 			else if(this.state.activeFilter === 'Age Rating'){
 				filterUI = <SelectListMax stateObject = {'selectedAge'}
+													currentValue = {this.state.selectedAge}
 													options = {this.state.ageFilterValues}
 													change = { this.handleSelectMaxClick } />
+			}
+			else if(this.state.activeFilter === 'Genre'){
+				filterUI = <SelectList stateObject = {'selectedGenre'}
+													currentValue = {this.state.selectedGenre}
+													options = {this.state.genreDataListValues}
+													change = { this.handleSelectClick } />
 			}
 		}
 		const bodyContent = this.state.loaded ?

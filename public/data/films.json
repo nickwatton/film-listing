@@ -11,7 +11,7 @@
 			"type": "list",
 			"label": "Genre",
 			"searchField": "category",
-			"active": false
+			"active": true
 		},
 		{
 			"type": "range",
@@ -8636,14 +8636,14 @@
 	},
 	{
 		"title": "Still Life at the Penguine Café",
-		"duration": null,
+		"duration": 38,
 		"director": "Penguine Café Orchestra",
-		"year": null,
+		"year": 1987,
 		"disks": null,
 		"category": "Dance",
 		"storage": "Mixed",
 		"poster": "stilllifepenguine.jpg",
-		"BBFC": "",
+		"BBFC": "U",
 		"rtURL": "",
 		"stars": null,
 		"note": "",
