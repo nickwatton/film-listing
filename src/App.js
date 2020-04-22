@@ -17,7 +17,7 @@ class App extends Component {
 		currentPage: 0,
 		films: [],
 		filters: [],
-		activeFilter: 'Director',
+		activeFilter: 'Title',
 		minMaxDuration: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxYear: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxStars: {'min':0, 'currMin':0, 'max':5, 'currMax':5, active:true },
