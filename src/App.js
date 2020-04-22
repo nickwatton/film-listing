@@ -5,6 +5,7 @@ import FilterList from './components/filterList/filterList';
 import MinMax from './components/filterList/filterUI/minMax';
 import SelectList from './components/filterList/filterUI/selectList';
 import SelectListMax from './components/filterList/filterUI/selectListMax';
+import TextInput from './components/filterList/filterUI/textInput';
 import Pagination from './components/pagination/pagination';
 import Footer from './components/footer/footer';
 import './App.scss';
@@ -16,12 +17,14 @@ class App extends Component {
 		currentPage: 0,
 		films: [],
 		filters: [],
-		activeFilter: 'Age Rating',
+		activeFilter: 'Director',
 		minMaxDuration: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxYear: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxStars: {'min':0, 'currMin':0, 'max':5, 'currMax':5, active:true },
 		selectedAge: -1,
 		selectedGenre: 'none',
+		selectedDirector: '',
+		selectedTitle: '',
 		loaded:false
 	}
 
@@ -90,7 +93,7 @@ class App extends Component {
 				genres[genre[i]] = genre[i];
 			}
 		}
-		// console.log(typeof films[0].genres)
+		// console.log(films[13])
 
 		directors = this.sortObject(directors);
 		mutable.directorDataListValues = this.convertObjectToArray(directors);
@@ -107,7 +110,7 @@ class App extends Component {
 		mutable.minMaxYear = {'min':minYear, 'currMin':minYear, 'max':maxYear, 'currMax':maxYear, active:true }
 		mutable.minMaxDuration = {'min':minLength, 'currMin':minLength, 'max':maxLength, 'currMax':maxLength, active:true }
 
-		// console.log('Genres:', mutable.genreDataListValues)
+		// console.log('Directors:', mutable.directorDataListValues)
 	}
 
 	sortObject(unsorted){
@@ -167,7 +170,13 @@ class App extends Component {
 	handleSelectClick = (evt, stateObj) => {
 		const mutable = {...this.state};
 		mutable[stateObj] = evt.target.value;
-		// console.log(mutable[stateObj])
+		this.setState(mutable);
+	} 
+
+	// Handle textInput filter
+	handleTextInputChange = (evt, stateObj) => {
+		const mutable = {...this.state};
+		mutable[stateObj] = evt.target.value.toLowerCase();
 		this.setState(mutable);
 	} 
 
@@ -193,11 +202,19 @@ class App extends Component {
 			if(this.state.minMaxStars.active) {
 				filteredFilms = filteredFilms.filter( film => film.stars <= this.state.minMaxStars.currMax && film.stars >= this.state.minMaxStars.currMin );
 			}
+			// Select list filters (age, genre)
 			if(this.state.selectedAge !== -1){
 				filteredFilms = filteredFilms.filter( film => film.ageValue <= this.state.selectedAge );
 			}
 			if(this.state.selectedGenre !== 'none'){
 				filteredFilms = filteredFilms.filter( film => film.category.includes(this.state.selectedGenre) );
+			}
+			// Text input filters (director, title)
+			if(this.state.selectedDirector !== ''){
+				filteredFilms = filteredFilms.filter( film => film.director.toLowerCase().indexOf(this.state.selectedDirector) !== -1 );
+			}
+			if(this.state.selectedTitle !== ''){
+				filteredFilms = filteredFilms.filter( film => film.title.toLowerCase().indexOf(this.state.selectedTitle) !== -1 );
 			}
 		}
 		
@@ -242,6 +259,17 @@ class App extends Component {
 													options = {this.state.genreDataListValues}
 													change = { this.handleSelectClick } />
 			}
+			else if(this.state.activeFilter === 'Director'){
+				filterUI = <TextInput stateObject = {'selectedDirector'}
+													searchField = 'Directors'
+													options = {this.state.directorDataListValues}
+													change = { this.handleTextInputChange } />
+			}
+			else if(this.state.activeFilter === 'Title'){
+				filterUI = <TextInput stateObject = {'selectedTitle'}
+													searchField = 'Titles'
+													change = { this.handleTextInputChange } />
+			}
 		}
 		const bodyContent = this.state.loaded ?
 					<div>
@@ -253,6 +281,8 @@ class App extends Component {
 						<FilmListing films = {filmsToDisplay} /> 
 					</div> : 
 					<h2 className = "loading">Loading data</h2>
+
+
 
 		return (
 			<div className = "App">

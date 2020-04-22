@@ -19,7 +19,7 @@ const film = (props) => {
 	if (film.notes !== null && film.notes !== undefined) details.push(`Notes: ${film.notes}`);
 
 	const starRating = (film.stars !== null) ? `star-rating stars_${film.stars}` : '';
-	const rottenTomReview = film.rtURL !== null ? <p>Review on <a href={film.rtURL}>Rotten Tomatoes</a></p> : '';
+	const rottenTomReview = film.rtURL !== '' ? <p>Review on <a href={film.rtURL}>Rotten Tomatoes</a></p> : '';
 	const filmPoster = film.poster !== '' ? `filmPosters/${film.poster}` : 'posterError.jpg';
 	const filmTitle = film.title.split('|').join(',');
 

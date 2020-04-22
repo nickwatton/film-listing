@@ -9,10 +9,12 @@ const pagination = (props) => {
 									<button onClick = {() => props.click(1)} >next</button> :
 									<button disabled >next</button>;
 
+	let filmCopy = props.numFilms === 1 ? 'film' : 'films';
+
 	return (
 		<div className='pagination'>
 			{ prevBtn }
-			{`page ${props.page + 1} of ${props.pageMax} (${props.numFilms} films)`}
+			{`page ${props.page + 1} of ${props.pageMax} (${props.numFilms} ${filmCopy})`}
 			{ nextBtn }
 		</div>
 	)

@@ -3,12 +3,6 @@
 	"filters":[
 		{
 			"type": "list",
-			"label": "Age Rating",
-			"searchField": "BBFC",
-			"active": true
-		},
-		{
-			"type": "list",
 			"label": "Genre",
 			"searchField": "category",
 			"active": true
@@ -26,22 +20,28 @@
 			"active": true
 		},
 		{
-			"type": "range",
-			"label": "Star Rating",
-			"searchField": "stars",
+			"type": "dataList",
+			"label": "Title",
+			"searchField": "title",
 			"active": true
 		},
 		{
 			"type": "dataList",
 			"label": "Director",
 			"searchField": "director",
-			"active": false
+			"active": true
 		},
 		{
-			"type": "dataList",
-			"label": "Title",
-			"searchField": "title",
-			"active": false
+			"type": "list",
+			"label": "Age Rating",
+			"searchField": "BBFC",
+			"active": true
+		},
+		{
+			"type": "range",
+			"label": "Star Rating",
+			"searchField": "stars",
+			"active": true
 		}
 	],
 	"ratingMap":{
@@ -1486,12 +1486,12 @@
 		"title": "Bronson",
 		"duration": 89,
 		"director": "Nicolas Winding Refn",
-		"year": 2009,
+		"year": 2008,
 		"disks": null,
 		"category": "Drama",
 		"storage": "A-Z",
 		"poster": "bronson.jpg",
-		"BBFC": "",
+		"BBFC": "18",
 		"rtURL": "",
 		"stars": null,
 		"note": "",
@@ -3299,7 +3299,7 @@
 		"category": "Adventure|Drama|Fantasy|TV|Series",
 		"storage": "Loose",
 		"poster": "gameofthrones_s1.jpg",
-		"BBFC": "",
+		"BBFC": "15",
 		"rtURL": "",
 		"stars": 5,
 		"note": "oo. hooked",
@@ -3315,7 +3315,7 @@
 		"category": "Adventure|Drama|Fantasy|TV|Series",
 		"storage": "Mixed",
 		"poster": "gameofthrones_s2.jpg",
-		"BBFC": "",
+		"BBFC": "15",
 		"rtURL": "",
 		"stars": 5,
 		"note": "Gets better.",
@@ -3331,7 +3331,7 @@
 		"category": "Adventure|Drama|Fantasy|TV|Series",
 		"storage": "Mixed",
 		"poster": "gameofthrones_s3.jpg",
-		"BBFC": "",
+		"BBFC": "15",
 		"rtURL": "",
 		"stars": 5,
 		"note": "Couldn't wait for the disks.",
@@ -3347,7 +3347,7 @@
 		"category": "Adventure|Drama|Fantasy|TV|Series",
 		"storage": "Mixed",
 		"poster": "",
-		"BBFC": "",
+		"BBFC": "15",
 		"rtURL": "",
 		"stars": 5,
 		"note": "",
