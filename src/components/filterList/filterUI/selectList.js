@@ -10,7 +10,7 @@ const selectList = (props) => {
 				<label htmlFor = 'selectList'>Select: </label>
 				<select id = 'selectList' 
 								onChange = { (evt) => props.change(evt, props.stateObject) }>
-					<option key={'-1'} value={props.currentValue}>{props.currentValue}</option>
+					<option key={'-1'} value={'none'}>none</option>
 					{props.options.map( (f, i) => <option key={`option${i}`} value={`${f}`}>
 																					{f}
 																				</option> )}

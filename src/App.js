@@ -21,7 +21,7 @@ class App extends Component {
 		minMaxDuration: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxYear: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxStars: {'min':0, 'currMin':0, 'max':5, 'currMax':5, active:true },
-		selectedAge: -1,
+		selectedAge: 'none',
 		selectedGenre: 'none',
 		selectedDirector: '',
 		selectedTitle: '',
@@ -65,10 +65,16 @@ class App extends Component {
 		let minLength = 9999999, maxLength = 0;
 		
 		// console.log(films[0])
+		// let c=0
 
 		for(let i = 0; i<films.length; i++){
 			let film = films[i];
 			let ageString = film.BBFC;
+
+			// if(ageString === '')
+			// 		console.log(++c, film.title)
+
+
 			film.BBFC = ageLookup[ageString].id;
 			film.ageValue = ageLookup[ageString].weight;
 			ageRatings[film.BBFC] = {id:film.BBFC, ageValue:film.ageValue};
@@ -90,9 +96,11 @@ class App extends Component {
 
 			let genre = film.category.split('|');
 			for(let i=0; i<genre.length; i++){
-				genres[genre[i]] = genre[i];
+				if(genre[i] !== '')
+					genres[genre[i]] = genre[i];
 			}
 		}
+		// console.log(genres)
 		// console.log(films[13])
 
 		directors = this.sortObject(directors);
@@ -203,7 +211,7 @@ class App extends Component {
 				filteredFilms = filteredFilms.filter( film => film.stars <= this.state.minMaxStars.currMax && film.stars >= this.state.minMaxStars.currMin );
 			}
 			// Select list filters (age, genre)
-			if(this.state.selectedAge !== -1){
+			if(this.state.selectedAge !== 'none'){
 				filteredFilms = filteredFilms.filter( film => film.ageValue <= this.state.selectedAge );
 			}
 			if(this.state.selectedGenre !== 'none'){
