@@ -14,8 +14,8 @@ const film = (props) => {
 	if (film.director !== null) details.push(`Director: ${film.director}`);
 	if (film.BBFC !== null) details.push(`Age rating: ${film.BBFC}`);
 	if (film.category !== null) details.push(`Genre: ${film.category.split('|').join(', ')}`);
-	if (film.storage !== null) details.push(`Storage: ${film.storage}`);
-	if (film.format !== null) details.push(`Format: ${film.format}`);
+	// if (film.storage !== null) details.push(`Storage: ${film.storage}`);
+	// if (film.format !== null) details.push(`Format: ${film.format}`);
 	if (film.notes !== null && film.notes !== undefined) details.push(`Notes: ${film.notes}`);
 
 	const starRating = (film.stars !== null) ? `star-rating stars_${film.stars}` : '';

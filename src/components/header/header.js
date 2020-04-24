@@ -1,11 +1,14 @@
 import React from 'react';
 
-const header = () =>{
+const header = (props) => {
 
+	const navBlock = (props.linkCopy === 'LISTING') ?
+						<p>About this site</p> :
+						<p>Film listings</p>
 	return(
 		<div className="header">
 			<h1>Film listing</h1>
-			<p>Work in progress</p>
+			<div className='pointer' onClick = {props.click} >{ navBlock }</div>
 		</div>
 	)
 

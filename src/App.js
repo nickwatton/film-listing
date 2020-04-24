@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Header from './components/header/header';
+import AboutPage from './components/pages/about';
 import FilmListing from './components/filmListing/filmListing';
 import FilterList from './components/filterList/filterList';
 import MinMax from './components/filterList/filterUI/minMax';
@@ -17,7 +18,7 @@ class App extends Component {
 		currentPage: 0,
 		films: [],
 		filters: [],
-		activeFilter: 'Title',
+		activeFilter: 'Genre',
 		minMaxDuration: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxYear: {'min':0, 'currMin':0, 'max':1, 'currMax':1, active:true },
 		minMaxStars: {'min':0, 'currMin':0, 'max':5, 'currMax':5, active:true },
@@ -25,6 +26,7 @@ class App extends Component {
 		selectedGenre: 'none',
 		selectedDirector: '',
 		selectedTitle: '',
+		pageToDisplay: 'LOADING',
 		loaded:false
 	}
 
@@ -49,6 +51,7 @@ class App extends Component {
 		mutable.year = data.copyright;
 		mutable.filters = [...this.state.filters, ...data.filters];
 		mutable.loaded = true;
+		mutable.pageToDisplay = 'LISTING';
 		this.setState(mutable);
 	}
 	
@@ -202,6 +205,19 @@ class App extends Component {
 		}
 	}
 
+	handleHeaderClick = () => {
+		const mutable = {...this.state};
+		if(mutable.pageToDisplay !== 'LOADING') {
+			if(mutable.pageToDisplay === 'LISTING' ){
+				mutable.pageToDisplay = 'ABOUT';
+			}
+			else {
+				mutable.pageToDisplay = 'LISTING';
+			}
+			this.setState(mutable);
+		}
+	}
+
 	render(){
 		let filteredFilms = [...this.state.films];
 		
@@ -291,30 +307,32 @@ class App extends Component {
 			}
 		}
 
-
-		const bodyContent = this.state.loaded ?
-					<div>
-						<FilterList filterClick = { this.filterHandler } 
-												filters = {this.state.filters} 
-												// ageFilterValues = {this.state.ageFilterValues} 
-												activeFilter = {this.state.activeFilter} />
-						{ filterUI }
-						<FilmListing films = {filmsToDisplay} /> 
-					</div> : 
-					<h2 className = "loading">Loading data</h2>
+		let bodyContent = <h2 className = "loading">Loading data</h2>
+		if (this.state.loaded) {
+			bodyContent = (this.state.pageToDisplay === 'LISTING') ? 
+				<div>
+					<FilterList filterClick = { this.filterHandler } 
+											filters = {this.state.filters} 
+											// ageFilterValues = {this.state.ageFilterValues} 
+											activeFilter = {this.state.activeFilter} />
+					{ filterUI }
+					<FilmListing films = {filmsToDisplay} /> 
+					<Pagination page = {this.state.currentPage} 
+											pageMax = {pageMax} 
+											numFilms = {filteredFilms.length}
+											click = { this.handlePagination } />
+				</div> 
+				:
+				<AboutPage />
+		}
 
 
 
 		return (
 			<div className = "App">
-				<Header />
+				<Header linkCopy = {this.state.pageToDisplay} click = { this.handleHeaderClick }/>
 
 				{ bodyContent }
-				
-				<Pagination page = {this.state.currentPage} 
-										pageMax = {pageMax} 
-										numFilms = {filteredFilms.length}
-										click = { this.handlePagination } />
 
 				<Footer year = {this.state.year} />
 			</div>
