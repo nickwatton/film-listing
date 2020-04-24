@@ -65,15 +65,14 @@ class App extends Component {
 		let minLength = 9999999, maxLength = 0;
 		
 		// console.log(films[0])
-		// let c=0
+		let c=0;
 
 		for(let i = 0; i<films.length; i++){
 			let film = films[i];
 			let ageString = film.BBFC;
 
-			// if(ageString === '')
-			// 		console.log(++c, film.title)
-
+			if(ageString === '')
+					console.log(++c, film.title)
 
 			film.BBFC = ageLookup[ageString].id;
 			film.ageValue = ageLookup[ageString].weight;
@@ -191,14 +190,23 @@ class App extends Component {
 	handlePagination = (val) => {
 		const mutable = {...this.state};
 		mutable.currentPage += val;
-
-		// if current page greater than max page ... current === max ??? Hmmm.
 		this.setState(mutable);
+	}
+	// Check if current page > max page 
+	// NB - Current page is zero based **
+	checkPageInBounds = (pageMax) => {
+		const mutable = {...this.state};
+		if(pageMax < mutable.currentPage) {
+			mutable.currentPage = pageMax - 1; // **
+			this.setState(mutable);
+		}
 	}
 
 	render(){
 		let filteredFilms = [...this.state.films];
 		
+
+		// Filter the films
 		if(this.state.loaded){
 			// MinMax filters (duration, years, stars)
 			if(this.state.minMaxDuration.active) {
@@ -231,7 +239,10 @@ class App extends Component {
 			startFilm, startFilm + this.state.pageSize
 		)
 		let pageMax = Math.ceil( filteredFilms.length / this.state.pageSize );
+		this.checkPageInBounds(pageMax);
 
+
+		// Display currently selected filter UI
 		let filterUI = null;
 		if(this.state.activeFilter){
 			if(this.state.activeFilter === 'Duration'){
@@ -279,6 +290,8 @@ class App extends Component {
 													change = { this.handleTextInputChange } />
 			}
 		}
+
+
 		const bodyContent = this.state.loaded ?
 					<div>
 						<FilterList filterClick = { this.filterHandler } 
@@ -302,6 +315,7 @@ class App extends Component {
 										pageMax = {pageMax} 
 										numFilms = {filteredFilms.length}
 										click = { this.handlePagination } />
+
 				<Footer year = {this.state.year} />
 			</div>
 		)
