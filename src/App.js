@@ -135,11 +135,106 @@ class App extends Component {
 		return Object.keys(obj).map( key => obj[key] );
 	}
 
+
+	// Set properties of currently selected filter UI
+	setFilterUI(){
+		let filterUI = null;
+		if(this.state.activeFilter){
+			if(this.state.activeFilter === 'Duration'){
+				filterUI = <MinMax minMax = {this.state.minMaxDuration}
+													stateObject = {'minMaxDuration'}
+													isActive = {this.state.minMaxDuration.active}
+													toggle = { this.handleMinMaxToggle }
+													change = { this.handleMinMaxChange }/>
+			}
+			else if(this.state.activeFilter === 'Year'){
+				filterUI = <MinMax minMax = {this.state.minMaxYear}
+													stateObject = {'minMaxYear'}
+													isActive = {this.state.minMaxYear.active}
+													toggle = { this.handleMinMaxToggle }
+													change = { this.handleMinMaxChange }/>
+			}
+			else if(this.state.activeFilter === 'Star Rating'){
+				filterUI = <MinMax minMax = {this.state.minMaxStars}
+													stateObject = {'minMaxStars'}
+													isActive = {this.state.minMaxStars.active}
+													toggle = { this.handleMinMaxToggle }
+													change = { this.handleMinMaxChange }/>
+			}
+			else if(this.state.activeFilter === 'Age Rating'){
+				filterUI = <SelectListMax stateObject = {'selectedAge'}
+													currentValue = {this.state.selectedAge}
+													options = {this.state.ageFilterValues}
+													change = { this.handleSelectMaxClick } />
+			}
+			else if(this.state.activeFilter === 'Genre'){
+				filterUI = <SelectList stateObject = {'selectedGenre'}
+													currentValue = {this.state.selectedGenre}
+													options = {this.state.genreDataListValues}
+													change = { this.handleSelectClick } />
+			}
+			else if(this.state.activeFilter === 'Director'){
+				filterUI = <TextInput stateObject = {'selectedDirector'}
+													searchField = 'Directors'
+													options = {this.state.directorDataListValues}
+													change = { this.handleTextInputChange } />
+			}
+			else if(this.state.activeFilter === 'Title'){
+				filterUI = <TextInput stateObject = {'selectedTitle'}
+													searchField = 'Titles'
+													change = { this.handleTextInputChange } />
+			}
+		}
+		return filterUI;
+	}
+
 	// Set / toggle off current filter
 	filterHandler = (filterType, filterID) => {
 		const mutable = {...this.state};
 		mutable.activeFilter = filterID === mutable.activeFilter ? null : filterID;
 		this.setState(mutable);
+	}
+
+	// Apply filters to full film list
+	filterFilmList(){
+		let filteredFilms = [...this.state.films];
+
+		// Filter the films
+		if(this.state.loaded){
+			// MinMax filters (duration, years, stars)
+			if(this.state.minMaxDuration.active) {
+				filteredFilms = filteredFilms.filter( film => film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin );
+			}
+			if(this.state.minMaxYear.active) {
+				filteredFilms = filteredFilms.filter( film => film.year <= this.state.minMaxYear.currMax && film.year >= this.state.minMaxYear.currMin );
+			}
+			if(this.state.minMaxStars.active) {
+				filteredFilms = filteredFilms.filter( film => film.stars <= this.state.minMaxStars.currMax && film.stars >= this.state.minMaxStars.currMin );
+			}
+			// Select list filters (age, genre)
+			if(this.state.selectedAge !== 'none'){
+				filteredFilms = filteredFilms.filter( film => film.ageValue <= this.state.selectedAge );
+			}
+			if(this.state.selectedGenre !== 'none'){
+				filteredFilms = filteredFilms.filter( film => film.category.includes(this.state.selectedGenre) );
+			}
+			// Text input filters (director, title)
+			if(this.state.selectedDirector !== ''){
+				filteredFilms = filteredFilms.filter( film => film.director.toLowerCase().indexOf(this.state.selectedDirector) !== -1 );
+			}
+			if(this.state.selectedTitle !== ''){
+				filteredFilms = filteredFilms.filter( film => film.title.toLowerCase().indexOf(this.state.selectedTitle) !== -1 );
+			}
+		}
+		return filteredFilms;
+	}
+
+	filmsInCurrentPage(filteredFilms){
+		let startFilm = this.state.pageSize * this.state.currentPage;
+		let filmsToDisplay = [...filteredFilms].slice(
+			startFilm, startFilm + this.state.pageSize
+		)
+		return filmsToDisplay;
 	}
 
 	// Handle min/max slider
@@ -219,93 +314,16 @@ class App extends Component {
 	}
 
 	render(){
-		let filteredFilms = [...this.state.films];
-		
+		// Apply filters and pagination to films
+		let filteredFilms = this.filterFilmList();
+		let filmsToDisplayInPage = this.filmsInCurrentPage(filteredFilms);
 
-		// Filter the films
-		if(this.state.loaded){
-			// MinMax filters (duration, years, stars)
-			if(this.state.minMaxDuration.active) {
-				filteredFilms = filteredFilms.filter( film => film.duration <= this.state.minMaxDuration.currMax && film.duration >= this.state.minMaxDuration.currMin );
-			}
-			if(this.state.minMaxYear.active) {
-				filteredFilms = filteredFilms.filter( film => film.year <= this.state.minMaxYear.currMax && film.year >= this.state.minMaxYear.currMin );
-			}
-			if(this.state.minMaxStars.active) {
-				filteredFilms = filteredFilms.filter( film => film.stars <= this.state.minMaxStars.currMax && film.stars >= this.state.minMaxStars.currMin );
-			}
-			// Select list filters (age, genre)
-			if(this.state.selectedAge !== 'none'){
-				filteredFilms = filteredFilms.filter( film => film.ageValue <= this.state.selectedAge );
-			}
-			if(this.state.selectedGenre !== 'none'){
-				filteredFilms = filteredFilms.filter( film => film.category.includes(this.state.selectedGenre) );
-			}
-			// Text input filters (director, title)
-			if(this.state.selectedDirector !== ''){
-				filteredFilms = filteredFilms.filter( film => film.director.toLowerCase().indexOf(this.state.selectedDirector) !== -1 );
-			}
-			if(this.state.selectedTitle !== ''){
-				filteredFilms = filteredFilms.filter( film => film.title.toLowerCase().indexOf(this.state.selectedTitle) !== -1 );
-			}
-		}
-		
-		let startFilm = this.state.pageSize * this.state.currentPage;
-		let filmsToDisplay = [...filteredFilms].slice(
-			startFilm, startFilm + this.state.pageSize
-		)
+		// Calculate pagination details under current filters
 		let pageMax = Math.ceil( filteredFilms.length / this.state.pageSize );
 		this.checkPageInBounds(pageMax);
 
-
 		// Display currently selected filter UI
-		let filterUI = null;
-		if(this.state.activeFilter){
-			if(this.state.activeFilter === 'Duration'){
-				filterUI = <MinMax minMax = {this.state.minMaxDuration}
-													stateObject = {'minMaxDuration'}
-													isActive = {this.state.minMaxDuration.active}
-													toggle = { this.handleMinMaxToggle }
-													change = { this.handleMinMaxChange }/>
-			}
-			else if(this.state.activeFilter === 'Year'){
-				filterUI = <MinMax minMax = {this.state.minMaxYear}
-													stateObject = {'minMaxYear'}
-													isActive = {this.state.minMaxYear.active}
-													toggle = { this.handleMinMaxToggle }
-													change = { this.handleMinMaxChange }/>
-			}
-			else if(this.state.activeFilter === 'Star Rating'){
-				filterUI = <MinMax minMax = {this.state.minMaxStars}
-													stateObject = {'minMaxStars'}
-													isActive = {this.state.minMaxStars.active}
-													toggle = { this.handleMinMaxToggle }
-													change = { this.handleMinMaxChange }/>
-			}
-			else if(this.state.activeFilter === 'Age Rating'){
-				filterUI = <SelectListMax stateObject = {'selectedAge'}
-													currentValue = {this.state.selectedAge}
-													options = {this.state.ageFilterValues}
-													change = { this.handleSelectMaxClick } />
-			}
-			else if(this.state.activeFilter === 'Genre'){
-				filterUI = <SelectList stateObject = {'selectedGenre'}
-													currentValue = {this.state.selectedGenre}
-													options = {this.state.genreDataListValues}
-													change = { this.handleSelectClick } />
-			}
-			else if(this.state.activeFilter === 'Director'){
-				filterUI = <TextInput stateObject = {'selectedDirector'}
-													searchField = 'Directors'
-													options = {this.state.directorDataListValues}
-													change = { this.handleTextInputChange } />
-			}
-			else if(this.state.activeFilter === 'Title'){
-				filterUI = <TextInput stateObject = {'selectedTitle'}
-													searchField = 'Titles'
-													change = { this.handleTextInputChange } />
-			}
-		}
+		let filterUI = this.setFilterUI();
 
 		let bodyContent = <h2 className = "loading">Loading data</h2>
 		if (this.state.loaded) {
@@ -316,7 +334,7 @@ class App extends Component {
 											// ageFilterValues = {this.state.ageFilterValues} 
 											activeFilter = {this.state.activeFilter} />
 					{ filterUI }
-					<FilmListing films = {filmsToDisplay} /> 
+					<FilmListing films = {filmsToDisplayInPage} /> 
 					<Pagination page = {this.state.currentPage} 
 											pageMax = {pageMax} 
 											numFilms = {filteredFilms.length}
@@ -325,8 +343,6 @@ class App extends Component {
 				:
 				<AboutPage />
 		}
-
-
 
 		return (
 			<div className = "App">
